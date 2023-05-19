@@ -2,6 +2,8 @@ package com.eventsphere.user.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -21,7 +23,7 @@ public class User {
     private String username;
 
     @Basic
-    @Column(name = "password", nullable = false, length = 255)
+    @Column(name = "password", nullable = false)
     private String password;
 
     @Basic
@@ -29,22 +31,24 @@ public class User {
     private String email;
 
     @Basic
-    @Column(name = "first_name", nullable = true, length = 50)
+    @Column(name = "first_name", length = 50)
     private String firstName;
 
     @Basic
-    @Column(name = "last_name", nullable = true, length = 50)
+    @Column(name = "last_name", length = 50)
     private String lastName;
 
     @Basic
-    @Column(name = "date_of_birth", nullable = true)
+    @Column(name = "date_of_birth")
     private Date dateOfBirth;
 
     @Basic
-    @Column(name = "created_at", nullable = true)
+    @Column(name = "created_at", updatable = false)
+    @CreationTimestamp
     private Timestamp createdAt;
 
     @Basic
-    @Column(name = "updated_at", nullable = true)
+    @Column(name = "updated_at")
+    @UpdateTimestamp
     private Timestamp updatedAt;
 }
