@@ -1,6 +1,7 @@
 package com.eventsphere.user.controller;
 
 import com.eventsphere.user.model.User;
+import com.eventsphere.user.model.dto.UserDto;
 import com.eventsphere.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +45,11 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @Valid @RequestBody User user) {
         return ResponseEntity.ok(userService.update(user));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @Valid @RequestBody UserDto userDto) {
+        return ResponseEntity.ok(userService.update(id, userDto));
     }
 
     @DeleteMapping("/{id}")
