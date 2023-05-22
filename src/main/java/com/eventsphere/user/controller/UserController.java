@@ -1,10 +1,12 @@
 package com.eventsphere.user.controller;
 
 import com.eventsphere.user.model.User;
+import com.eventsphere.user.model.dto.ChangePasswordDto;
 import com.eventsphere.user.model.dto.UserDto;
 import com.eventsphere.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -42,6 +44,7 @@ public class UserController {
         return ResponseEntity.created(location).body(createdUser);
     }
 
+    // Actually, I think it can be removed, so it is deprecated even before the PR :D
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @Valid @RequestBody User user) {
         return ResponseEntity.ok(userService.update(user));
@@ -52,7 +55,14 @@ public class UserController {
         return ResponseEntity.ok(userService.update(id, userDto));
     }
 
+    @PatchMapping("/{id}/change-password")
+    @ResponseStatus(HttpStatus.OK)
+    public void changePassword(@PathVariable Long id, @Valid @RequestBody ChangePasswordDto passwordDto) {
+        userService.changePassword(id, passwordDto);
+    }
+
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public void deleteUser(@PathVariable Long id) {
         userService.delete(id);
     }

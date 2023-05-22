@@ -3,10 +3,10 @@ package com.eventsphere.user.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(HttpStatus.CONFLICT)
-public class UserAlreadyExistsException extends RuntimeException {
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+public class PasswordException extends RuntimeException {
 
-    public UserAlreadyExistsException(String message) {
+    public PasswordException(String message) {
         super(message);
     }
 }

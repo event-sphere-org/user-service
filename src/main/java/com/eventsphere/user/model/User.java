@@ -1,10 +1,7 @@
 package com.eventsphere.user.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Null;
-import jakarta.validation.constraints.Past;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -32,6 +29,7 @@ public class User {
     @Column(name = "password", nullable = false)
     @Size(min = 6, message = "Password must be at least 6 characters")
     @Size(max = 255, message = "Password must be no more than 255 characters")
+    @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[0-9]).+$", message = "Password must have at least 1 number and 1 letter")
     private String password;
 
     @Basic

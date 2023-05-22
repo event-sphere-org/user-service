@@ -1,9 +1,11 @@
 package com.eventsphere.user.service;
 
+import com.eventsphere.user.exception.PasswordException;
 import com.eventsphere.user.exception.UserAlreadyExistsException;
 import com.eventsphere.user.exception.UserNotFoundException;
 import com.eventsphere.user.exception.UserNotValidException;
 import com.eventsphere.user.model.User;
+import com.eventsphere.user.model.dto.ChangePasswordDto;
 import com.eventsphere.user.model.dto.UserDto;
 import com.eventsphere.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -79,26 +81,25 @@ public class UserService {
                 checkUsernameUpdate(userFromDb.getUsername(), userDto.getUsername())) {
             userFromDb.setUsername(userDto.getUsername());
         }
-        // Password change check
-        if (userDto.getPassword() != null &&
-                !userDto.getPassword().equals(userFromDb.getPassword())) {
-            userFromDb.setPassword(userDto.getPassword());
-        }
+
         // Email change check
         if (userDto.getEmail() != null &&
                 checkUsernameUpdate(userFromDb.getEmail(), userDto.getEmail())) {
             userFromDb.setEmail(userDto.getEmail());
         }
+
         // First name change check
         if (userDto.getFirstName() != null &&
                 !userDto.getFirstName().equals(userFromDb.getFirstName())) {
             userFromDb.setFirstName(userDto.getFirstName());
         }
+
         // Last name change check
         if (userDto.getLastName() != null &&
                 !userDto.getLastName().equals(userFromDb.getLastName())) {
             userFromDb.setLastName(userDto.getLastName());
         }
+
         // Date of birth change check
         if (userDto.getDateOfBirth() != null &&
                 userDto.getDateOfBirth().compareTo(userFromDb.getDateOfBirth()) != 0) {
@@ -124,6 +125,20 @@ public class UserService {
         }
 
         return true;
+    }
+
+    public void changePassword(Long userId, ChangePasswordDto passwordDto) {
+        User userFromDb = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+
+        if (!userFromDb.getPassword().equals(passwordDto.getOldPassword())) {
+            throw new PasswordException("Incorrect old password");
+        } else if (!passwordDto.getNewPassword().equals(passwordDto.getConfirmPassword())) {
+            throw new PasswordException("Passwords don't match");
+        } else {
+            userFromDb.setPassword(passwordDto.getNewPassword());
+            save(userFromDb);
+        }
     }
 
     public void delete(Long id) {

@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.sql.Timestamp;
-import java.util.Objects;
 
 @Entity
 @Table(name = "user_event_subscription", schema = "public", catalog = "event_sphere")
@@ -17,14 +16,14 @@ public class UserEventSubscription {
     private Long id;
 
     @Basic
-    @Column(name = "user_id", nullable = true)
+    @Column(name = "user_id")
     private Long userId;
 
     @Basic
-    @Column(name = "event_id", nullable = true)
+    @Column(name = "event_id")
     private Long eventId;
 
     @Basic
-    @Column(name = "created_at", nullable = true)
+    @Column(name = "created_at")
     private Timestamp createdAt;
 }
