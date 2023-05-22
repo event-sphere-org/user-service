@@ -2,8 +2,8 @@ package com.eventsphere.user.controller;
 
 import com.eventsphere.user.model.User;
 import com.eventsphere.user.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -30,24 +30,23 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        User savedUser = userService.save(user);
+    public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
+        User createdUser = userService.create(user);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(savedUser.getId())
+                .buildAndExpand(createdUser.getId())
                 .toUri();
 
-        return ResponseEntity.created(location).body(savedUser);
+        return ResponseEntity.created(location).body(createdUser);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @Valid @RequestBody User user) {
         return ResponseEntity.ok(userService.update(user));
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable Long id) {
         userService.delete(id);
     }
