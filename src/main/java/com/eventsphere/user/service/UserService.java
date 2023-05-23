@@ -13,20 +13,42 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Service class for managing user-related operations.
+ */
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
 
+    /**
+     * Retrieves a list of all users.
+     *
+     * @return List of {@link User} objects.
+     */
     public List<User> getAll() {
         return userRepository.findAll();
     }
 
+    /**
+     * Retrieves a specific user by their ID.
+     *
+     * @param id The ID of the user to retrieve.
+     * @return The {@link User} object.
+     * @throws UserNotFoundException if the user with the given ID is not found.
+     */
     public User get(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
     }
 
+    /**
+     * Saves a user.
+     *
+     * @param user The {@link User} object to save.
+     * @return The saved {@link User} object.
+     * @throws UserNotValidException if the user data is invalid.
+     */
     public User save(User user) {
         User savedUser;
 
@@ -43,6 +65,13 @@ public class UserService {
         return savedUser;
     }
 
+    /**
+     * Creates a new user.
+     *
+     * @param user The {@link User} object to create.
+     * @return The created {@link User} object.
+     * @throws UserAlreadyExistsException if a user with the same username or email already exists.
+     */
     public User create(User user) {
         User createdUser;
 
@@ -57,7 +86,14 @@ public class UserService {
         return createdUser;
     }
 
-    // PUT Mapping
+    /**
+     * Updates an existing user. (PUT)
+     *
+     * @param user The updated {@link User} object.
+     * @return The updated {@link User} object.
+     * @throws UserNotFoundException      if the user with the given ID is not found.
+     * @throws UserAlreadyExistsException if a user with the updated username or email already exists.
+     */
     public User update(User user) {
         User updatedUser = null;
         User userFromDb = userRepository.findById(user.getId())
@@ -71,7 +107,15 @@ public class UserService {
         return updatedUser;
     }
 
-    // PATCH Mapping
+    /**
+     * Updates an existing user with partial data. (PATCH)
+     *
+     * @param userId  The ID of the user to update.
+     * @param userDto The {@link UserDto} object containing the partial user data.
+     * @return The updated {@link User} object.
+     * @throws UserNotFoundException      if the user with the given ID is not found.
+     * @throws UserAlreadyExistsException if a user with the updated username or email already exists.
+     */
     public User update(Long userId, UserDto userDto) {
         User userFromDb = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
@@ -109,6 +153,14 @@ public class UserService {
         return save(userFromDb);
     }
 
+    /**
+     * Checks if the updated email is valid and not already registered.
+     *
+     * @param emailFromDb  The current email stored in the database.
+     * @param updatedEmail The updated email to check.
+     * @return true if the email is valid and not already registered, false otherwise.
+     * @throws UserAlreadyExistsException if the updated email is already registered.
+     */
     public boolean checkEmailUpdate(String emailFromDb, String updatedEmail) {
         if (!updatedEmail.equals(emailFromDb) &&
                 userRepository.existsByEmail(updatedEmail)) {
@@ -118,6 +170,14 @@ public class UserService {
         return true;
     }
 
+    /**
+     * Checks if the updated username is valid and not already registered.
+     *
+     * @param usernameFromDb  The current username stored in the database.
+     * @param updatedUsername The updated username to check.
+     * @return true if the username is valid and not already registered, false otherwise.
+     * @throws UserAlreadyExistsException if the updated username is already registered.
+     */
     public boolean checkUsernameUpdate(String usernameFromDb, String updatedUsername) {
         if (!updatedUsername.equals(usernameFromDb) &&
                 userRepository.existsByUsername(updatedUsername)) {
@@ -127,6 +187,14 @@ public class UserService {
         return true;
     }
 
+    /**
+     * Changes the password of a user.
+     *
+     * @param userId      The ID of the user to change the password.
+     * @param passwordDto The {@link ChangePasswordDto} object containing the old and new passwords.
+     * @throws UserNotFoundException if the user with the given ID is not found.
+     * @throws PasswordException     if the old password is incorrect or the new passwords don't match.
+     */
     public void changePassword(Long userId, ChangePasswordDto passwordDto) {
         User userFromDb = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
@@ -141,6 +209,12 @@ public class UserService {
         }
     }
 
+    /**
+     * Deletes a user.
+     *
+     * @param id The ID of the user to delete.
+     * @throws UserNotFoundException if the user with the given ID is not found.
+     */
     public void delete(Long id) {
         if (userRepository.existsById(id)) {
             userRepository.deleteById(id);
