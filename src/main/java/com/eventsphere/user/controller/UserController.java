@@ -18,7 +18,7 @@ import java.util.List;
  * Controller class for managing user-related operations.
  */
 @RestController
-@RequestMapping("/users")
+@RequestMapping("v1/users")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -62,19 +62,6 @@ public class UserController {
                 .toUri();
 
         return ResponseEntity.created(location).body(createdUser);
-    }
-
-    /**
-     * Updates an existing user.
-     * Actually, I think it can be deleted, so it's deprecated even before the PR :D
-     *
-     * @param id   The ID of the user to update.
-     * @param user The updated user object.
-     * @return ResponseEntity with the updated user object and HTTP status OK.
-     */
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @Valid @RequestBody User user) {
-        return ResponseEntity.ok(userService.update(user));
     }
 
     /**
