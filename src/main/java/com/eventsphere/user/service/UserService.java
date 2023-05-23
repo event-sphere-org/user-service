@@ -96,8 +96,7 @@ public class UserService {
      * @throws UserAlreadyExistsException if a user with the updated username or email already exists.
      */
     public User update(Long userId, UserDto userDto) {
-        User userFromDb = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
+        User userFromDb = get(userId);
 
         // Username change check
         if (userDto.getUsername() != null &&
@@ -107,7 +106,7 @@ public class UserService {
 
         // Email change check
         if (userDto.getEmail() != null &&
-                checkUsernameUpdate(userFromDb.getEmail(), userDto.getEmail())) {
+                checkEmailUpdate(userFromDb.getEmail(), userDto.getEmail())) {
             userFromDb.setEmail(userDto.getEmail());
         }
 
@@ -175,8 +174,7 @@ public class UserService {
      * @throws PasswordException     if the old password is incorrect or the new passwords don't match.
      */
     public void changePassword(Long userId, ChangePasswordDto passwordDto) {
-        User userFromDb = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
+        User userFromDb = get(userId);
 
         if (!userFromDb.getPassword().equals(passwordDto.getOldPassword())) {
             throw new PasswordException("Incorrect old password");

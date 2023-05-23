@@ -2,19 +2,25 @@ package com.eventsphere.user.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.Objects;
 
-@EqualsAndHashCode(callSuper = false)
 @Entity
-@Table(name = "user", schema = "public", catalog = "event_sphere")
-@Data
+@Table(name = "user", schema = "user_service_schema", catalog = "event_sphere")
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 public class User extends RepresentationModel<User> {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -68,4 +74,17 @@ public class User extends RepresentationModel<User> {
     @UpdateTimestamp
     @Null(message = "Cannot manually set modification date")
     private Timestamp updatedAt;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        User user = (User) o;
+        return getId() != null && Objects.equals(getId(), user.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

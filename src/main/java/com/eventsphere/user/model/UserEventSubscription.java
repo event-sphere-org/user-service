@@ -1,13 +1,21 @@
 package com.eventsphere.user.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.Hibernate;
 
 import java.sql.Timestamp;
+import java.util.Objects;
 
 @Entity
-@Table(name = "user_event_subscription", schema = "public", catalog = "event_sphere")
-@Data
+@Table(name = "user_event_subscription", schema = "user_service_schema", catalog = "event_sphere")
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 public class UserEventSubscription {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,4 +34,17 @@ public class UserEventSubscription {
     @Basic
     @Column(name = "created_at")
     private Timestamp createdAt;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        UserEventSubscription that = (UserEventSubscription) o;
+        return getId() != null && Objects.equals(getId(), that.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
