@@ -3,16 +3,19 @@ package com.eventsphere.user.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.sql.Date;
 import java.sql.Timestamp;
 
+@EqualsAndHashCode(callSuper = false)
 @Entity
 @Table(name = "user", schema = "public", catalog = "event_sphere")
 @Data
-public class User {
+public class User extends RepresentationModel<User> {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
