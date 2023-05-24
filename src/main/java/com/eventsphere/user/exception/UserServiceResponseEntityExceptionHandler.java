@@ -1,6 +1,7 @@
 package com.eventsphere.user.exception;
 
 import com.eventsphere.user.util.ErrorUtils;
+import lombok.NonNull;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -89,7 +90,12 @@ public class UserServiceResponseEntityExceptionHandler extends ResponseEntityExc
      * @return a ResponseEntity containing the error details and status.
      */
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException ex,
+            @NonNull HttpHeaders headers,
+            @NonNull HttpStatusCode status,
+            WebRequest request
+    ) {
         BeanValidationErrorDetails errorDetails = new BeanValidationErrorDetails(LocalDateTime.now(),
                 ErrorUtils.getFieldErrors(ex.getFieldErrors()), request.getDescription(false));
 

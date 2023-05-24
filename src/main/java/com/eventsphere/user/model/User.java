@@ -1,5 +1,6 @@
 package com.eventsphere.user.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
@@ -13,7 +14,9 @@ import org.springframework.hateoas.RepresentationModel;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "user", schema = "user_service_schema", catalog = "event_sphere")
@@ -74,6 +77,21 @@ public class User extends RepresentationModel<User> {
     @UpdateTimestamp
     @Null(message = "Cannot manually set modification date")
     private Timestamp updatedAt;
+
+    @OneToMany(mappedBy = "user")
+    @ToString.Exclude
+    @JsonIgnore
+    private Set<UserCategorySubscription> userCategorySubscriptions = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    @ToString.Exclude
+    @JsonIgnore
+    private Set<UserEventSubscription> userEventSubscriptions = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    @ToString.Exclude
+    @JsonIgnore
+    private Set<UserInterest> userInterests = new LinkedHashSet<>();
 
     @Override
     public boolean equals(Object o) {

@@ -24,16 +24,17 @@ public class UserCategorySubscription {
     private Long id;
 
     @Basic
-    @Column(name = "user_id", nullable = true)
-    private Long userId;
-
-    @Basic
-    @Column(name = "category_id", nullable = true)
+    @Column(name = "category_id")
     private Long categoryId;
 
     @Basic
-    @Column(name = "created_at", nullable = true)
+    @Column(name = "created_at")
     private Timestamp createdAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @ToString.Exclude
+    private User user;
 
     @Override
     public boolean equals(Object o) {

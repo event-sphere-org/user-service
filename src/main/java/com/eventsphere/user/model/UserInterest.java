@@ -24,16 +24,17 @@ public class UserInterest {
     private Long id;
 
     @Basic
-    @Column(name = "user_id", nullable = true)
-    private Long userId;
-
-    @Basic
-    @Column(name = "interest", nullable = true, length = 100)
+    @Column(name = "interest", length = 100)
     private String interest;
 
     @Basic
-    @Column(name = "created_at", nullable = true)
+    @Column(name = "created_at")
     private Timestamp createdAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @ToString.Exclude
+    private User user;
 
     @Override
     public boolean equals(Object o) {
