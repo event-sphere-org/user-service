@@ -41,7 +41,7 @@ public class UserController {
      * @return ResponseEntity with the user object and HTTP status OK.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable Long id) {
+    public ResponseEntity<User> getUser(@PathVariable final Long id) {
         return ResponseEntity.ok(userService.get(id));
     }
 
@@ -53,7 +53,7 @@ public class UserController {
      * along with the URI of the created resource in the Location header.
      */
     @PostMapping
-    public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
+    public ResponseEntity<User> createUser(@Valid @RequestBody final User user) {
         User createdUser = userService.create(user);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -85,7 +85,7 @@ public class UserController {
      * @return ResponseEntity with the updated user object and HTTP status OK.
      */
     @PatchMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @Valid @RequestBody UserDto userDto) {
+    public ResponseEntity<User> updateUser(@PathVariable final Long id, @Valid @RequestBody final UserDto userDto) {
         return ResponseEntity.ok(userService.update(id, userDto));
     }
 
@@ -97,7 +97,7 @@ public class UserController {
      */
     @PatchMapping("/{id}/change-password")
     @ResponseStatus(HttpStatus.OK)
-    public void changePassword(@PathVariable Long id, @Valid @RequestBody ChangePasswordDto passwordDto) {
+    public void changePassword(@PathVariable final Long id, @Valid @RequestBody final ChangePasswordDto passwordDto) {
         userService.changePassword(id, passwordDto);
     }
 
