@@ -86,7 +86,7 @@ public class UserController {
      * along with the URI of the created resource in the Location header.
      */
     @PostMapping
-    public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
+    public ResponseEntity<User> createUser(@Valid @RequestBody final User user) {
         User createdUser = userService.create(user);
 
         createdUser.add(

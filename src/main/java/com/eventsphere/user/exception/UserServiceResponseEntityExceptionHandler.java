@@ -2,6 +2,7 @@ package com.eventsphere.user.exception;
 
 import com.eventsphere.user.util.ErrorUtils;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
  * Global exception handler for the UserService.
  */
 @ControllerAdvice
+@Slf4j
 public class UserServiceResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
     /**
@@ -31,6 +33,8 @@ public class UserServiceResponseEntityExceptionHandler extends ResponseEntityExc
     public final ResponseEntity<ErrorDetails> handleAllExceptions(Exception ex, WebRequest request) {
         ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(),
                 ex.getMessage(), request.getDescription(false));
+
+        log.error(ex.getMessage());
 
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -47,6 +51,8 @@ public class UserServiceResponseEntityExceptionHandler extends ResponseEntityExc
         ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(),
                 ex.getMessage(), request.getDescription(false));
 
+        log.warn(ex.getMessage());
+
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
 
@@ -62,6 +68,8 @@ public class UserServiceResponseEntityExceptionHandler extends ResponseEntityExc
         ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(),
                 ex.getMessage(), request.getDescription(false));
 
+        log.warn(ex.getMessage());
+
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 
@@ -76,6 +84,8 @@ public class UserServiceResponseEntityExceptionHandler extends ResponseEntityExc
     public final ResponseEntity<ErrorDetails> handleUserAlreadyExistsException(Exception ex, WebRequest request) {
         ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(),
                 ex.getMessage(), request.getDescription(false));
+
+        log.warn(ex.getMessage());
 
         return new ResponseEntity<>(errorDetails, HttpStatus.CONFLICT);
     }
