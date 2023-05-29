@@ -2,16 +2,21 @@ package com.eventsphere.user.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.Data;
+import lombok.*;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.Objects;
 
 @Entity
 @Table(name = "user", schema = "public", catalog = "event_sphere")
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 public class User {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -65,4 +70,30 @@ public class User {
     @UpdateTimestamp
     @Null(message = "Cannot manually set modification date")
     private Timestamp updatedAt;
+
+    // For testing purposes only
+    public User(Long id, String username, String email) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+    }
+
+    // For testing purposes only
+    public User(String username, String email) {
+        this.username = username;
+        this.email = email;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        User user = (User) o;
+        return getId() != null && Objects.equals(getId(), user.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
