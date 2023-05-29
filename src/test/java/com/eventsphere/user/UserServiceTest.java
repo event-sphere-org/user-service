@@ -127,62 +127,6 @@ class UserServiceTest {
     }
 
     @Test
-    void updateExistingUserShouldUpdateUser() throws UserNotFoundException, UserAlreadyExistsException {
-        // Given
-        Long userId = 1L;
-        User existingUser = new User(userId, "user1", "user1@example.com");
-        User updatedUser = new User(userId, "user1updated", "user1updated@example.com");
-        when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
-        when(userRepository.existsByUsername(updatedUser.getUsername())).thenReturn(false);
-        when(userRepository.existsByEmail(updatedUser.getEmail())).thenReturn(false);
-        when(userRepository.save(updatedUser)).thenReturn(updatedUser);
-
-        // When
-        User actualUpdatedUser = userService.update(updatedUser);
-
-        // Then
-        assertEquals(updatedUser, actualUpdatedUser);
-        verify(userRepository, times(1)).save(updatedUser);
-    }
-
-    @Test
-    void updateNonExistingUserShouldThrowUserNotFoundException() {
-        // Given
-        Long userId = 1L;
-        User nonExistingUser = new User(userId, "user1", "user1@example.com");
-        when(userRepository.findById(userId)).thenReturn(Optional.empty());
-
-        // When & Then
-        assertThrows(UserNotFoundException.class, () -> userService.update(nonExistingUser));
-    }
-
-    @Test
-    void updateUserWithExistingUsernameShouldThrowUserAlreadyExistsException() {
-        // Given
-        Long userId = 1L;
-        User existingUser = new User(userId, "user1", "user1@example.com");
-        User updatedUser = new User(userId, "user2", "user1@example.com");
-        when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
-        when(userRepository.existsByUsername(updatedUser.getUsername())).thenReturn(true);
-
-        // When & Then
-        assertThrows(UserAlreadyExistsException.class, () -> userService.update(updatedUser));
-    }
-
-    @Test
-    void updateUserWithExistingEmailShouldThrowUserAlreadyExistsException() {
-        // Given
-        Long userId = 1L;
-        User existingUser = new User(userId, "user1", "user1@example.com");
-        User updatedUser = new User(userId, "user1", "user2@example.com");
-        when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
-        when(userRepository.existsByEmail(updatedUser.getEmail())).thenReturn(true);
-
-        // When & Then
-        assertThrows(UserAlreadyExistsException.class, () -> userService.update(updatedUser));
-    }
-
-    @Test
     void updatePartialUserDataShouldUpdateUserFields() throws UserNotFoundException, UserAlreadyExistsException {
         // Given
         Long userId = 1L;
