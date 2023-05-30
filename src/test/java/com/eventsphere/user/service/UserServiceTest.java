@@ -1,4 +1,4 @@
-package com.eventsphere.user;
+package com.eventsphere.user.service;
 
 import com.eventsphere.user.exception.PasswordException;
 import com.eventsphere.user.exception.UserAlreadyExistsException;
@@ -8,7 +8,6 @@ import com.eventsphere.user.model.User;
 import com.eventsphere.user.model.dto.ChangePasswordDto;
 import com.eventsphere.user.model.dto.UserDto;
 import com.eventsphere.user.repository.UserRepository;
-import com.eventsphere.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -36,8 +35,8 @@ class UserServiceTest {
     void getAllShouldReturnAllUsers() {
         // Given
         List<User> expectedUsers = Arrays.asList(
-                new User(1L, "user1", "user1@example.com"),
-                new User(2L, "user2", "user2@example.com")
+                new User(1L, "user1", "password1", "user1@example.com"),
+                new User(2L, "user2", "password1", "user2@example.com")
         );
         when(userRepository.findAll()).thenReturn(expectedUsers);
 
@@ -52,7 +51,7 @@ class UserServiceTest {
     void getValidIdShouldReturnUser() throws UserNotFoundException {
         // Given
         Long userId = 1L;
-        User expectedUser = new User(userId, "user1", "user1@example.com");
+        User expectedUser = new User(userId, "user1", "password1", "user1@example.com");
         when(userRepository.findById(userId)).thenReturn(Optional.of(expectedUser));
 
         // When
@@ -75,8 +74,8 @@ class UserServiceTest {
     @Test
     void saveValidUserShouldSaveUser() throws UserNotValidException {
         // Given
-        User userToSave = new User("user1", "user1@example.com");
-        User expectedSavedUser = new User(1L, "user1", "user1@example.com");
+        User userToSave = new User("user1", "password1", "user1@example.com");
+        User expectedSavedUser = new User(1L, "user1", "password1", "user1@example.com");
         when(userRepository.save(userToSave)).thenReturn(expectedSavedUser);
 
         // When
@@ -92,7 +91,7 @@ class UserServiceTest {
     @Test
     void createNewUserShouldCreateUser() throws UserAlreadyExistsException, UserNotValidException {
         // Given
-        User newUser = new User("user1", "user1@example.com");
+        User newUser = new User("user1", "password1", "user1@example.com");
         when(userRepository.existsByUsername(newUser.getUsername())).thenReturn(false);
         when(userRepository.existsByEmail(newUser.getEmail())).thenReturn(false);
         when(userRepository.save(newUser)).thenReturn(newUser);
@@ -108,7 +107,7 @@ class UserServiceTest {
     @Test
     void createUserWithExistingUsernameShouldThrowUserAlreadyExistsException() {
         // Given
-        User existingUser = new User("user1", "user1@example.com");
+        User existingUser = new User("user1", "password1", "user1@example.com");
         when(userRepository.existsByUsername(existingUser.getUsername())).thenReturn(true);
 
         // When & Then
@@ -118,7 +117,7 @@ class UserServiceTest {
     @Test
     void createUserWithExistingEmailShouldThrowUserAlreadyExistsException() {
         // Given
-        User existingUser = new User("user1", "user1@example.com");
+        User existingUser = new User("user1", "password1", "user1@example.com");
         when(userRepository.existsByUsername(existingUser.getUsername())).thenReturn(false);
         when(userRepository.existsByEmail(existingUser.getEmail())).thenReturn(true);
 
@@ -130,8 +129,8 @@ class UserServiceTest {
     void updateExistingUserShouldUpdateUser() throws UserNotFoundException, UserAlreadyExistsException {
         // Given
         Long userId = 1L;
-        User existingUser = new User(userId, "user1", "user1@example.com");
-        User updatedUser = new User(userId, "user1updated", "user1updated@example.com");
+        User existingUser = new User(userId, "user1", "password1", "user1@example.com");
+        User updatedUser = new User(userId, "user1updated", "password1", "user1updated@example.com");
         when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
         when(userRepository.existsByUsername(updatedUser.getUsername())).thenReturn(false);
         when(userRepository.existsByEmail(updatedUser.getEmail())).thenReturn(false);
@@ -149,7 +148,7 @@ class UserServiceTest {
     void updateNonExistingUserShouldThrowUserNotFoundException() {
         // Given
         Long userId = 1L;
-        User nonExistingUser = new User(userId, "user1", "user1@example.com");
+        User nonExistingUser = new User(userId, "user1", "password1", "user1@example.com");
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
         // When & Then
@@ -160,8 +159,8 @@ class UserServiceTest {
     void updateUserWithExistingUsernameShouldThrowUserAlreadyExistsException() {
         // Given
         Long userId = 1L;
-        User existingUser = new User(userId, "user1", "user1@example.com");
-        User updatedUser = new User(userId, "user2", "user1@example.com");
+        User existingUser = new User(userId, "user1", "password1", "user1@example.com");
+        User updatedUser = new User(userId, "user2", "password1", "user1@example.com");
         when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
         when(userRepository.existsByUsername(updatedUser.getUsername())).thenReturn(true);
 
@@ -173,8 +172,8 @@ class UserServiceTest {
     void updateUserWithExistingEmailShouldThrowUserAlreadyExistsException() {
         // Given
         Long userId = 1L;
-        User existingUser = new User(userId, "user1", "user1@example.com");
-        User updatedUser = new User(userId, "user1", "user2@example.com");
+        User existingUser = new User(userId, "user1", "password1", "user1@example.com");
+        User updatedUser = new User(userId, "user1", "password1", "user2@example.com");
         when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
         when(userRepository.existsByEmail(updatedUser.getEmail())).thenReturn(true);
 
@@ -186,7 +185,7 @@ class UserServiceTest {
     void updatePartialUserDataShouldUpdateUserFields() throws UserNotFoundException, UserAlreadyExistsException {
         // Given
         Long userId = 1L;
-        User existingUser = new User(userId, "user1", "user1@example.com");
+        User existingUser = new User(userId, "user1", "password1", "user1@example.com");
 
         UserDto userDto = new UserDto();
         userDto.setUsername("user1updated");
@@ -195,7 +194,7 @@ class UserServiceTest {
         userDto.setLastName("Doe");
         userDto.setDateOfBirth(Date.valueOf("1990-01-01"));
 
-        User expectedUpdatedUser = new User(userId, "user1updated", "user1updated@example.com");
+        User expectedUpdatedUser = new User(userId, "user1updated", "password1", "user1updated@example.com");
         expectedUpdatedUser.setFirstName("John");
         expectedUpdatedUser.setLastName("Doe");
         expectedUpdatedUser.setDateOfBirth(Date.valueOf("1990-01-01"));
@@ -299,7 +298,7 @@ class UserServiceTest {
         String confirmPassword = "newpassword";
         ChangePasswordDto passwordDto = new ChangePasswordDto(oldPassword, newPassword, confirmPassword);
 
-        User userFromDb = new User(userId, "user1", "user1@example.com");
+        User userFromDb = new User(userId, "user1", "password1", "user1@example.com");
         userFromDb.setPassword(oldPassword);
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(userFromDb));
@@ -322,7 +321,7 @@ class UserServiceTest {
         String confirmPassword = "newpassword";
         ChangePasswordDto passwordDto = new ChangePasswordDto(oldPassword, newPassword, confirmPassword);
 
-        User userFromDb = new User(userId, "user1", "user1@example.com");
+        User userFromDb = new User(userId, "user1", "password1", "user1@example.com");
         userFromDb.setPassword("differentpassword");
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(userFromDb));
@@ -342,7 +341,7 @@ class UserServiceTest {
         String confirmPassword = "differentpassword";
         ChangePasswordDto passwordDto = new ChangePasswordDto(oldPassword, newPassword, confirmPassword);
 
-        User userFromDb = new User(userId, "user1", "user1@example.com");
+        User userFromDb = new User(userId, "user1", "password1", "user1@example.com");
 
         userFromDb.setPassword(oldPassword);
         when(userRepository.findById(userId)).thenReturn(Optional.of(userFromDb));

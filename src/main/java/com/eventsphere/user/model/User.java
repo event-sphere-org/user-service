@@ -2,7 +2,10 @@ package com.eventsphere.user.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -26,12 +29,14 @@ public class User {
 
     @Basic
     @Column(name = "username", nullable = false, length = 50)
+    @NotNull(message = "Provide a username")
     @Size(min = 3, message = "Username must be at least 3 characters")
     @Size(max = 50, message = "Username must be no more than 50 characters")
     private String username;
 
     @Basic
     @Column(name = "password", nullable = false)
+    @NotNull(message = "Provide a password")
     @Size(min = 6, message = "Password must be at least 6 characters")
     @Size(max = 255, message = "Password must be no more than 255 characters")
     @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[0-9]).+$", message = "Password must have at least 1 number and 1 letter")
@@ -39,6 +44,7 @@ public class User {
 
     @Basic
     @Column(name = "email", nullable = false, length = 100)
+    @NotNull(message = "Provide an email")
     @Email(message = "Provide a valid email")
     private String email;
 
@@ -72,15 +78,17 @@ public class User {
     private Timestamp updatedAt;
 
     // For testing purposes only
-    public User(Long id, String username, String email) {
+    public User(Long id, @NotNull String username, @NotNull String password, @NotNull String email) {
         this.id = id;
         this.username = username;
+        this.password = password;
         this.email = email;
     }
 
     // For testing purposes only
-    public User(String username, String email) {
+    public User(@NotNull String username, @NotNull String password, @NotNull String email) {
         this.username = username;
+        this.password = password;
         this.email = email;
     }
 
