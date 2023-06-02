@@ -15,7 +15,7 @@ import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
-@Table(name = "user", schema = "public", catalog = "event_sphere")
+@Table(name = "user", schema = "user_service_schema", catalog = "event_sphere")
 @Getter
 @Setter
 @ToString

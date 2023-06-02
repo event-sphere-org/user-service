@@ -141,7 +141,7 @@ public class UserService {
         // Date of birth change check
         if (userDto.getDateOfBirth() != null &&
                 (userFromDb.getDateOfBirth() == null ||
-                userDto.getDateOfBirth().compareTo(userFromDb.getDateOfBirth()) != 0)) {
+                        userDto.getDateOfBirth().compareTo(userFromDb.getDateOfBirth()) != 0)) {
             userFromDb.setDateOfBirth(userDto.getDateOfBirth());
         }
 
