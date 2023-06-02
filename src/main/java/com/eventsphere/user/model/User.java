@@ -10,6 +10,7 @@ import lombok.ToString;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -23,7 +24,7 @@ import java.util.Set;
 @Setter
 @ToString
 @RequiredArgsConstructor
-public class User {
+public class User extends RepresentationModel<User> {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id

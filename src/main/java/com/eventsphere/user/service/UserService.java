@@ -82,26 +82,6 @@ public class UserService {
     }
 
     /**
-     * Updates an existing user. (PUT)
-     *
-     * @param user The updated {@link User} object.
-     * @return The updated {@link User} object.
-     * @throws UserNotFoundException      if the user with the given ID is not found.
-     * @throws UserAlreadyExistsException if a user with the updated username or email already exists.
-     */
-    public User update(final User user) throws UserNotFoundException, UserAlreadyExistsException {
-        User userFromDb = userRepository.findById(user.getId())
-                .orElseThrow(() -> new UserNotFoundException(user.getId()));
-
-        if (checkUsernameUpdate(userFromDb.getUsername(), user.getUsername()) &&
-                checkEmailUpdate(userFromDb.getEmail(), user.getEmail())) {
-            return save(user);
-        }
-
-        return null;
-    }
-
-    /**
      * Updates an existing user with partial data. (PATCH)
      *
      * @param userId  The ID of the user to update.
@@ -122,7 +102,7 @@ public class UserService {
 
         // Email change check
         if (userDto.getEmail() != null &&
-                checkUsernameUpdate(userFromDb.getEmail(), userDto.getEmail())) {
+                checkEmailUpdate(userFromDb.getEmail(), userDto.getEmail())) {
             userFromDb.setEmail(userDto.getEmail());
         }
 
