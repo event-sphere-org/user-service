@@ -23,9 +23,10 @@ public class UserEventSubscription {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Basic
-    @Column(name = "user_id")
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @ToString.Exclude
+    private User user;
 
     @Basic
     @Column(name = "event_id")

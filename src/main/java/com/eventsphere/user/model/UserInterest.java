@@ -23,16 +23,17 @@ public class UserInterest {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Basic
-    @Column(name = "user_id", nullable = true)
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @ToString.Exclude
+    private User user;
 
     @Basic
-    @Column(name = "interest", nullable = true, length = 100)
+    @Column(name = "interest", length = 100)
     private String interest;
 
     @Basic
-    @Column(name = "created_at", nullable = true)
+    @Column(name = "created_at")
     private Timestamp createdAt;
 
     @Override
