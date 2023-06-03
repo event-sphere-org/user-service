@@ -42,7 +42,6 @@ public class UserService {
      * @throws UserNotFoundException if the user with the given ID is not found.
      */
     public User get(final Long id) throws UserNotFoundException {
-        log.debug("GETTING USER WITH ID {}", id);
         return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
     }
 
@@ -91,8 +90,7 @@ public class UserService {
      * @throws UserAlreadyExistsException if a user with the updated username or email already exists.
      */
     public User update(final Long userId, final UserDto userDto) throws UserNotFoundException, UserAlreadyExistsException {
-        User userFromDb = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
+        User userFromDb = get(userId);
 
         // Username change check
         if (userDto.getUsername() != null &&

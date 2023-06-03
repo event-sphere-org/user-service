@@ -7,7 +7,6 @@ import com.eventsphere.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -22,7 +21,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
  * Controller class for managing user-related operations.
  */
 @RestController
-@RequestMapping("/users")
+@RequestMapping("v1/users")
 @RequiredArgsConstructor
 public class UserController {
 

@@ -9,6 +9,7 @@ import com.eventsphere.user.service.UserService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -40,12 +41,12 @@ class UserControllerTest {
         when(userService.getAll()).thenReturn(users);
 
         // When & Then
-        mockMvc.perform(MockMvcRequestBuilders.get("/users"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/users"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$[0].id").value(1L))
-                .andExpect(jsonPath("$[0].username").value("user"))
-                .andExpect(jsonPath("$[0].email").value("example@example.com"));
+                .andExpect(jsonPath("$._embedded.userList").isArray())
+                .andExpect(jsonPath("$._embedded.userList[0].id").value(1))
+                .andExpect(jsonPath("$._embedded.userList[0].username").value("user"))
+                .andExpect(jsonPath("$._embedded.userList[0].email").value("example@example.com"));
     }
 
 
@@ -56,7 +57,7 @@ class UserControllerTest {
         when(userService.get(1L)).thenReturn(user);
 
         // When & Then
-        mockMvc.perform(MockMvcRequestBuilders.get("/users/1")
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/users/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L))
@@ -70,7 +71,7 @@ class UserControllerTest {
         when(userService.get(2L)).thenThrow(UserNotFoundException.class);
 
         // When & Then
-        mockMvc.perform(MockMvcRequestBuilders.get("/users/2")
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/users/2")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -83,14 +84,14 @@ class UserControllerTest {
 
         // When & Then
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/users")
+                        .post("/v1/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new Gson().toJson(user)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.username").value("John"))
                 .andExpect(jsonPath("$.email").value("john@example.com"))
-                .andExpect(header().string("location", "http://localhost/users/1"));
+                .andExpect(header().string("location", "http://localhost/v1/users/1"));
     }
 
     @Test
@@ -100,7 +101,7 @@ class UserControllerTest {
 
         // When & Then
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/users")
+                        .post("/v1/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new Gson().toJson(user)))
                 .andExpect(status().isBadRequest())
@@ -117,7 +118,7 @@ class UserControllerTest {
         // When & Then
         // Attempt to create the second user with the existing username
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/users")
+                        .post("/v1/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new Gson().toJson(user)))
                 .andExpect(status().isConflict())
@@ -134,13 +135,21 @@ class UserControllerTest {
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd").create();
 
+        // Configure userService mock behavior
+        User updatedUser = new User(1L, "updateFName", "password1", "john@example.com");
+        when(userService.update(Mockito.eq(1L), Mockito.any(UserDto.class))).thenReturn(updatedUser);
+
         // When & Then
         mockMvc.perform(MockMvcRequestBuilders
-                        .patch("/users/1")
+                        .patch("/v1/users/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(gson.toJson(userDto)))
                 .andExpect(status().isOk());
+
+        // Verify that the update method was called with the correct arguments
+        verify(userService).update(eq(1L), any(UserDto.class));
     }
+
 
     @Test
     void invalidPatchUserTest() throws Exception {
@@ -154,7 +163,7 @@ class UserControllerTest {
 
         // When & Then
         mockMvc.perform(MockMvcRequestBuilders
-                        .patch("/users/1")
+                        .patch("/v1/users/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(gson.toJson(userDto)))
                 .andExpect(status().isBadRequest());
@@ -167,7 +176,7 @@ class UserControllerTest {
 
         // When & Then
         mockMvc.perform(MockMvcRequestBuilders
-                        .patch("/users/1/change-password")
+                        .patch("/v1/users/1/change-password")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new Gson().toJson(passwordDto)))
                 .andExpect(status().isOk());
@@ -179,7 +188,7 @@ class UserControllerTest {
         Long userId = 1L;
 
         // When & Then
-        mockMvc.perform(MockMvcRequestBuilders.delete("/users/{id}", userId))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/v1/users/{id}", userId))
                 .andExpect(status().isOk());
         verify(userService).delete(userId);
     }
@@ -193,7 +202,7 @@ class UserControllerTest {
                 .delete(userId);
 
         // When & Then
-        mockMvc.perform(MockMvcRequestBuilders.delete("/users/{id}", userId))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/v1/users/{id}", userId))
                 .andExpect(status().isNotFound());
         verify(userService).delete(userId);
     }
