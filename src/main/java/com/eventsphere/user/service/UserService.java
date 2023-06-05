@@ -170,7 +170,7 @@ public class UserService {
      * @throws UserNotFoundException if the user with the given ID is not found.
      * @throws PasswordException     if the old password is incorrect or the new passwords don't match.
      */
-    public void changePassword(final Long userId, final ChangePasswordDto passwordDto) throws PasswordException {
+    public void changePassword(final Long userId, final ChangePasswordDto passwordDto) throws UserNotFoundException, PasswordException {
         User userFromDb = get(userId);
 
         if (!userFromDb.getPassword().equals(passwordDto.getOldPassword())) {
