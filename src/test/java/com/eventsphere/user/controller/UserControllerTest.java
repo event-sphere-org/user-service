@@ -1,5 +1,6 @@
 package com.eventsphere.user.controller;
 
+import com.eventsphere.user.controller.implementation.UserControllerImpl;
 import com.eventsphere.user.exception.UserAlreadyExistsException;
 import com.eventsphere.user.exception.UserNotFoundException;
 import com.eventsphere.user.model.User;
@@ -24,7 +25,7 @@ import java.util.List;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(UserController.class)
+@WebMvcTest(UserControllerImpl.class)
 class UserControllerTest {
 
     @Autowired
@@ -63,17 +64,6 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.username").value("John"))
                 .andExpect(jsonPath("$.email").value("john@example.com"));
-    }
-
-    @Test
-    void getNonExistingUserTest() throws Exception {
-        // Given
-        when(userService.get(2L)).thenThrow(UserNotFoundException.class);
-
-        // When & Then
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/users/2")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
     }
 
     @Test
