@@ -9,14 +9,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.validation.Valid;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 /**
  * Controller interface for managing user-related operations.
@@ -29,11 +26,6 @@ public interface UserController {
      * @return ResponseEntity with the list of users and HTTP status OK.
      */
     @Operation(summary = "Retrieves a list of all users", description = "Retrieves a list of all users")
-    @GetMapping(produces = {
-            MediaType.APPLICATION_JSON_VALUE,
-            MediaType.APPLICATION_XML_VALUE
-    })
-    @ResponseStatus(value = HttpStatus.OK)
     ResponseEntity<CollectionModel<User>> getAllUsers();
 
     /**
@@ -51,13 +43,7 @@ public interface UserController {
                     schema = @Schema(implementation = ErrorDetails.class)
             ))
     })
-    @GetMapping(value = "/{id}", produces = {
-            MediaType.APPLICATION_JSON_VALUE,
-            MediaType.APPLICATION_XML_VALUE
-    })
-    @ResponseStatus(value = HttpStatus.OK)
-    ResponseEntity<User> getUser(@Parameter(description = "ID of user to return", required = true)
-                                 @PathVariable Long id);
+    ResponseEntity<User> getUser(@Parameter(description = "ID of user to return", required = true) final Long id);
 
     /**
      * Creates a new user.
@@ -77,13 +63,8 @@ public interface UserController {
             @ApiResponse(responseCode = "500", description = "Error saving to database",
                     content = @Content(schema = @Schema(implementation = ErrorDetails.class)))
     })
-    @PostMapping(produces = {
-            MediaType.APPLICATION_JSON_VALUE,
-            MediaType.APPLICATION_XML_VALUE
-    })
-    @ResponseStatus(value = HttpStatus.CREATED)
-    ResponseEntity<User> createUser(@Parameter(description = "Create a new user", required = true)
-                                    @Valid @RequestBody final User user);
+    ResponseEntity<User> createUser(@RequestBody(description = "Request body of User to create", required = true,
+            content = @Content(schema = @Schema(implementation = User.class))) final User user);
 
     /**
      * Updates an existing user with partial data.
@@ -105,16 +86,10 @@ public interface UserController {
             @ApiResponse(responseCode = "500", description = "Error saving to database",
                     content = @Content(schema = @Schema(implementation = ErrorDetails.class)))
     })
-    @PatchMapping(value = "/{id}", produces = {
-            MediaType.APPLICATION_JSON_VALUE,
-            MediaType.APPLICATION_XML_VALUE
-    })
-    @ResponseStatus(value = HttpStatus.OK)
     ResponseEntity<User> updateUser(
-            @Parameter(description = "ID of user to update", required = true)
-            @PathVariable Long id,
-            @Parameter(description = "UserDTO for fields updating", required = true)
-            @Valid @RequestBody UserDto userDto
+            @Parameter(description = "ID of user to update", required = true) final Long id,
+            @RequestBody(description = "UserDTO for fields updating", required = true,
+                    content = @Content(schema = @Schema(implementation = UserDto.class))) final UserDto userDto
     );
 
     /**
@@ -135,16 +110,10 @@ public interface UserController {
             @ApiResponse(responseCode = "500", description = "Error saving to database",
                     content = @Content(schema = @Schema(implementation = ErrorDetails.class)))
     })
-    @PatchMapping(value = "/{id}/change-password", produces = {
-            MediaType.APPLICATION_JSON_VALUE,
-            MediaType.APPLICATION_XML_VALUE
-    })
-    @ResponseStatus(value = HttpStatus.OK)
     ResponseEntity<Void> changePassword(
-            @Parameter(description = "ID of user to change password", required = true)
-            @PathVariable final Long id,
-            @Parameter(description = "PasswordDTO for password updating", required = true)
-            @Valid @RequestBody final ChangePasswordDto passwordDto
+            @Parameter(description = "ID of user to change password", required = true) final Long id,
+            @RequestBody(description = "PasswordDTO for password updating", required = true,
+                    content = @Content(schema = @Schema(implementation = ChangePasswordDto.class))) final ChangePasswordDto passwordDto
     );
 
     /**
@@ -158,10 +127,7 @@ public interface UserController {
             @ApiResponse(responseCode = "404", description = "User not found",
                     content = @Content(schema = @Schema(implementation = ErrorDetails.class)))
     })
-    @DeleteMapping(value = "/{id}", produces = {
-            MediaType.APPLICATION_JSON_VALUE,
-            MediaType.APPLICATION_XML_VALUE
-    })
-    @ResponseStatus(value = HttpStatus.OK)
-    ResponseEntity<Void> deleteUser(@PathVariable Long id);
+    ResponseEntity<Void> deleteUser(
+            @Parameter(description = "ID of user to delete", required = true) final Long id
+    );
 }

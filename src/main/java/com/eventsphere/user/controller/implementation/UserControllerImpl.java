@@ -5,11 +5,13 @@ import com.eventsphere.user.model.User;
 import com.eventsphere.user.model.dto.ChangePasswordDto;
 import com.eventsphere.user.model.dto.UserDto;
 import com.eventsphere.user.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -35,6 +37,11 @@ public class UserControllerImpl implements UserController {
     private final UserService userService;
 
     @Override
+    @GetMapping(produces = {
+            MediaType.APPLICATION_JSON_VALUE,
+            MediaType.APPLICATION_XML_VALUE
+    })
+    @ResponseStatus(value = HttpStatus.OK)
     public ResponseEntity<CollectionModel<User>> getAllUsers() {
         List<User> users = userService.getAll();
 
@@ -57,7 +64,12 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public ResponseEntity<User> getUser(final Long id) {
+    @GetMapping(value = "/{id}", produces = {
+            MediaType.APPLICATION_JSON_VALUE,
+            MediaType.APPLICATION_XML_VALUE
+    })
+    @ResponseStatus(value = HttpStatus.OK)
+    public ResponseEntity<User> getUser(@PathVariable final Long id) {
         User user = userService.get(id);
 
         user.add(
@@ -71,7 +83,12 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public ResponseEntity<User> createUser(final User user) {
+    @PostMapping(produces = {
+            MediaType.APPLICATION_JSON_VALUE,
+            MediaType.APPLICATION_XML_VALUE
+    })
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public ResponseEntity<User> createUser(@Valid @RequestBody final User user) {
         User createdUser = userService.create(user);
 
         createdUser.add(
@@ -90,7 +107,15 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public ResponseEntity<User> updateUser(final Long id, final UserDto userDto) {
+    @PatchMapping(value = "/{id}", produces = {
+            MediaType.APPLICATION_JSON_VALUE,
+            MediaType.APPLICATION_XML_VALUE
+    })
+    @ResponseStatus(value = HttpStatus.OK)
+    public ResponseEntity<User> updateUser(
+            @PathVariable final Long id,
+            @Valid @RequestBody final UserDto userDto
+    ) {
         User updatedUser = userService.update(id, userDto);
 
         updatedUser.add(
@@ -104,13 +129,26 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public ResponseEntity<Void> changePassword(final Long id, final ChangePasswordDto passwordDto) {
+    @PatchMapping(value = "/{id}/change-password", produces = {
+            MediaType.APPLICATION_JSON_VALUE,
+            MediaType.APPLICATION_XML_VALUE
+    })
+    @ResponseStatus(value = HttpStatus.OK)
+    public ResponseEntity<Void> changePassword(
+            @PathVariable final Long id,
+            @Valid @RequestBody final ChangePasswordDto passwordDto
+    ) {
         userService.changePassword(id, passwordDto);
         return ResponseEntity.ok().build();
     }
 
     @Override
-    public ResponseEntity<Void> deleteUser(final Long id) {
+    @DeleteMapping(value = "/{id}", produces = {
+            MediaType.APPLICATION_JSON_VALUE,
+            MediaType.APPLICATION_XML_VALUE
+    })
+    @ResponseStatus(value = HttpStatus.OK)
+    public ResponseEntity<Void> deleteUser(@PathVariable final Long id) {
         userService.delete(id);
         return ResponseEntity.ok().build();
     }
