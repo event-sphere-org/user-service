@@ -1,14 +1,15 @@
 package com.eventsphere.user.exception;
 
 import com.eventsphere.user.util.ErrorUtils;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -17,7 +18,7 @@ import java.time.LocalDateTime;
 /**
  * Global exception handler for the UserService.
  */
-@ControllerAdvice
+@RestControllerAdvice
 @Slf4j
 public class UserServiceResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -99,7 +100,12 @@ public class UserServiceResponseEntityExceptionHandler extends ResponseEntityExc
      * @return a ResponseEntity containing the error details and status.
      */
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException ex,
+            @NotNull HttpHeaders headers,
+            @NotNull HttpStatusCode status,
+            WebRequest request
+    ) {
         BeanValidationErrorDetails errorDetails = new BeanValidationErrorDetails(LocalDateTime.now(),
                 ErrorUtils.getFieldErrors(ex.getFieldErrors()), request.getDescription(false));
 
