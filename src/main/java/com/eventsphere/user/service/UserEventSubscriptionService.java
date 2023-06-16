@@ -115,4 +115,16 @@ public class UserEventSubscriptionService {
             );
         }
     }
+
+    /**
+     * Unsubscribe user from all events (delete all event subscriptions)
+     *
+     * @param userId user id
+     */
+    @Transactional
+    public void unsubscribeUserFromAllEvents(Long userId) {
+        User user = userService.get(userId);
+
+        userEventSubscriptionRepository.deleteAllByUser(user);
+    }
 }

@@ -29,7 +29,7 @@ public interface UserEventSubscriptionController {
     @Operation(summary = "Retrieves all event subscriptions for user", description = "Retrieves all event subscriptions for user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(
-                    schema = @Schema(implementation = List.class, subTypes = UserEventSubscription.class)
+                    schema = @Schema(implementation = EventDto.class, type = "array")
             )),
             @ApiResponse(responseCode = "404", description = "User not found", content = @Content(
                     schema = @Schema(implementation = ErrorDetails.class)
@@ -53,10 +53,7 @@ public interface UserEventSubscriptionController {
             @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(
                     schema = @Schema(implementation = UserEventSubscription.class)
             )),
-            @ApiResponse(responseCode = "404", description = "User not found", content = @Content(
-                    schema = @Schema(implementation = ErrorDetails.class)
-            )),
-            @ApiResponse(responseCode = "404", description = "Event not found", content = @Content(
+            @ApiResponse(responseCode = "404", description = "User, event or subscription not found", content = @Content(
                     schema = @Schema(implementation = ErrorDetails.class)
             ))
     })
@@ -78,10 +75,7 @@ public interface UserEventSubscriptionController {
                     content = @Content(schema = @Schema(implementation = UserEventSubscription.class))),
             @ApiResponse(responseCode = "409", description = "Subscription already exists",
                     content = @Content(schema = @Schema(implementation = ErrorDetails.class))),
-            @ApiResponse(responseCode = "404", description = "User not found", content = @Content(
-                    schema = @Schema(implementation = ErrorDetails.class)
-            )),
-            @ApiResponse(responseCode = "404", description = "Event not found", content = @Content(
+            @ApiResponse(responseCode = "404", description = "User or event not found", content = @Content(
                     schema = @Schema(implementation = ErrorDetails.class)
             )),
             @ApiResponse(responseCode = "500", description = "Error saving to database",
@@ -102,10 +96,7 @@ public interface UserEventSubscriptionController {
     @Operation(summary = "Unsubscribes user from event", description = "Deletes subscription on event for user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content),
-            @ApiResponse(responseCode = "404", description = "User not found", content = @Content(
-                    schema = @Schema(implementation = ErrorDetails.class)
-            )),
-            @ApiResponse(responseCode = "404", description = "Event not found", content = @Content(
+            @ApiResponse(responseCode = "404", description = "User or subscription not found", content = @Content(
                     schema = @Schema(implementation = ErrorDetails.class)
             ))
     })

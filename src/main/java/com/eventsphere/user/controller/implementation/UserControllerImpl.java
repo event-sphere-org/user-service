@@ -4,9 +4,11 @@ import com.eventsphere.user.controller.UserController;
 import com.eventsphere.user.model.User;
 import com.eventsphere.user.model.dto.ChangePasswordDto;
 import com.eventsphere.user.model.dto.UserDto;
+import com.eventsphere.user.service.RabbitMqSender;
 import com.eventsphere.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,6 +28,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 @RequestMapping("v1/users")
 @RequiredArgsConstructor
+@Slf4j
 public class UserControllerImpl implements UserController {
 
     private static final String GET_USER_REL = "get-user";
@@ -35,6 +38,7 @@ public class UserControllerImpl implements UserController {
     private static final String SELF_REL = "self";
 
     private final UserService userService;
+    private final RabbitMqSender sender;
 
     @Override
     @GetMapping(produces = {
@@ -150,6 +154,10 @@ public class UserControllerImpl implements UserController {
     @ResponseStatus(value = HttpStatus.OK)
     public ResponseEntity<Void> deleteUser(@PathVariable final Long id) {
         userService.delete(id);
+
+        log.info("Sending id {} message to RabbitMQ to event-service", id);
+        sender.send(id);
+
         return ResponseEntity.ok().build();
     }
 }

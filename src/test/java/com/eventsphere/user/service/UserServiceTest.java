@@ -7,6 +7,7 @@ import com.eventsphere.user.exception.UserNotValidException;
 import com.eventsphere.user.model.User;
 import com.eventsphere.user.model.dto.ChangePasswordDto;
 import com.eventsphere.user.model.dto.UserDto;
+import com.eventsphere.user.repository.UserEventSubscriptionRepository;
 import com.eventsphere.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,11 +25,12 @@ class UserServiceTest {
 
     private UserService userService;
     private UserRepository userRepository;
+    private UserEventSubscriptionRepository userEventSubscriptionRepository;
 
     @BeforeEach
     void setUp() {
         userRepository = Mockito.mock(UserRepository.class);
-        userService = new UserService(userRepository);
+        userService = new UserService(userRepository, userEventSubscriptionRepository);
     }
 
     @Test

@@ -7,6 +7,7 @@ import com.eventsphere.user.exception.UserNotValidException;
 import com.eventsphere.user.model.User;
 import com.eventsphere.user.model.dto.ChangePasswordDto;
 import com.eventsphere.user.model.dto.UserDto;
+import com.eventsphere.user.repository.UserEventSubscriptionRepository;
 import com.eventsphere.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,8 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+
+    private final UserEventSubscriptionRepository userEventSubscriptionRepository;
 
     /**
      * Retrieves a list of all users.
@@ -190,7 +193,11 @@ public class UserService {
      * @throws UserNotFoundException if the user with the given ID is not found.
      */
     public void delete(final Long id) throws UserNotFoundException {
+        // TODO: Delete all user's events, subscriptions, etc.
+
+
         if (userRepository.existsById(id)) {
+            userEventSubscriptionRepository.deleteAllByUser(get(id));
             userRepository.deleteById(id);
         } else {
             throw new UserNotFoundException(id);

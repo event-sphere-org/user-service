@@ -103,10 +103,8 @@ public interface UserController {
             @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content),
             @ApiResponse(responseCode = "404", description = "User not found",
                     content = @Content(schema = @Schema(implementation = ErrorDetails.class))),
-            @ApiResponse(responseCode = "400", description = "Bad old password / new passwords don't match",
+            @ApiResponse(responseCode = "400", description = "Bad old password | new passwords don't match | password constraints don't match",
                     content = @Content(schema = @Schema(implementation = ErrorDetails.class))),
-            @ApiResponse(responseCode = "400", description = "Password constraints don't match",
-                    content = @Content(schema = @Schema(implementation = BeanValidationErrorDetails.class))),
             @ApiResponse(responseCode = "500", description = "Error saving to database",
                     content = @Content(schema = @Schema(implementation = ErrorDetails.class)))
     })
@@ -125,6 +123,8 @@ public interface UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content),
             @ApiResponse(responseCode = "404", description = "User not found",
+                    content = @Content(schema = @Schema(implementation = ErrorDetails.class))),
+            @ApiResponse(responseCode = "500", description = "Error saving to database",
                     content = @Content(schema = @Schema(implementation = ErrorDetails.class)))
     })
     ResponseEntity<Void> deleteUser(
