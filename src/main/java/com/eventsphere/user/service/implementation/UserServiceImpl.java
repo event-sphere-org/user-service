@@ -213,8 +213,8 @@ public class UserServiceImpl implements UserService {
             userEventSubscriptionRepository.deleteAllByUser(get(id));
             userCategorySubscriptionRepository.deleteAllByUser(get(id));
 
-            log.info("Sending id {} message to RabbitMQ to event-service", id);
-            sender.send(id);
+            log.info("Sending deleted user id {} message to event-service", id);
+            sender.sendDeletedUserId(id);
 
             userRepository.deleteById(id);
         } else {

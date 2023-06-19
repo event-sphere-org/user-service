@@ -21,4 +21,6 @@ public interface UserCategorySubscriptionRepository extends JpaRepository<UserCa
     void deleteByUserAndCategoryId(User user, Long categoryId);
 
     void deleteAllByUser(User user);
+
+    void deleteAllByCategoryId(Long categoryId);
 }

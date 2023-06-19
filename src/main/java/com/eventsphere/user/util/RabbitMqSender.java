@@ -16,10 +16,10 @@ public class RabbitMqSender {
     @Value("${spring.rabbitmq.template.exchange}")
     private String exchange;
 
-    @Value("${spring.rabbitmq.template.routing-key}")
-    private String routingKey;
+    @Value("${rabbitmq.routing-key.user.delete}")
+    private String userDeleteRk;
 
-    public void send(Long id) {
-        rabbitTemplate.convertAndSend(exchange, routingKey, id);
+    public void sendDeletedUserId(Long id) {
+        rabbitTemplate.convertAndSend(exchange, userDeleteRk, id);
     }
 }

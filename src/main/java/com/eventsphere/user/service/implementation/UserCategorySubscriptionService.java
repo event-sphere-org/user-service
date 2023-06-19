@@ -10,10 +10,13 @@ import com.eventsphere.user.service.SubscriptionService;
 import com.eventsphere.user.service.UserService;
 import com.eventsphere.user.service.client.CategoryClientService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,6 +25,7 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserCategorySubscriptionService implements SubscriptionService<UserCategorySubscription, CategoryDto> {
 
     private final UserCategorySubscriptionRepository userCategorySubscriptionRepository;
@@ -118,5 +122,13 @@ public class UserCategorySubscriptionService implements SubscriptionService<User
                     String.format("Can't find subscription for user %s and category %s", userId, itemId)
             );
         }
+    }
+
+    @RabbitListener(queues = "${rabbitmq.queue.category.delete}")
+    @Transactional
+    public void deleteAllByCategoryId(Long id) {
+        log.info("Received delete category message from event-service with id: " + id);
+        userCategorySubscriptionRepository.deleteAllByCategoryId(id);
+        log.info("Deleted all subscriptions for category with id: " + id);
     }
 }

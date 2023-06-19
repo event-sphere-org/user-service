@@ -21,4 +21,6 @@ public interface UserEventSubscriptionRepository extends JpaRepository<UserEvent
     void deleteByUserAndEventId(User user, Long eventId);
 
     void deleteAllByUser(User user);
+
+    void deleteAllByEventId(Long eventId);
 }
