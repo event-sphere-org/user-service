@@ -1,5 +1,7 @@
 package com.eventsphere.user.model;
 
+import com.eventsphere.user.model.dto.CategoryDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -30,11 +32,20 @@ public class UserCategorySubscription {
 
     @Basic
     @Column(name = "category_id")
+    @JsonIgnore
     private Long categoryId;
+
+    @Transient
+    private CategoryDto category;
 
     @Basic
     @Column(name = "created_at")
     private Timestamp createdAt;
+
+    public UserCategorySubscription(User user, Long categoryId) {
+        this.user = user;
+        this.categoryId = categoryId;
+    }
 
     @Override
     public boolean equals(Object o) {

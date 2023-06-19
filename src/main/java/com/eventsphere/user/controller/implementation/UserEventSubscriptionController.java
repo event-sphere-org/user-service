@@ -1,9 +1,9 @@
 package com.eventsphere.user.controller.implementation;
 
-import com.eventsphere.user.controller.UserEventSubscriptionController;
+import com.eventsphere.user.controller.SubscriptionController;
 import com.eventsphere.user.model.UserEventSubscription;
 import com.eventsphere.user.model.dto.EventDto;
-import com.eventsphere.user.service.UserEventSubscriptionService;
+import com.eventsphere.user.service.implementation.UserEventSubscriptionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * Default implementation of {@link UserEventSubscriptionController}
+ * Default implementation of {@link SubscriptionController}
  */
 @RestController
 @RequestMapping("v1/users/{userId}/subscriptions/events")
 @RequiredArgsConstructor
-public class UserEventSubscriptionControllerImpl implements UserEventSubscriptionController {
+public class UserEventSubscriptionController implements SubscriptionController<UserEventSubscription, EventDto> {
 
     private final UserEventSubscriptionService userEventSubscriptionService;
 
@@ -28,7 +28,7 @@ public class UserEventSubscriptionControllerImpl implements UserEventSubscriptio
             MediaType.APPLICATION_XML_VALUE
     })
     @ResponseStatus(value = HttpStatus.OK)
-    public ResponseEntity<List<EventDto>> getAllEventSubscriptions(
+    public ResponseEntity<List<EventDto>> getAllSubscriptions(
             @PathVariable final Long userId,
             @RequestParam(defaultValue = "0") final int page,
             @RequestParam(defaultValue = "10") final int size
@@ -37,42 +37,42 @@ public class UserEventSubscriptionControllerImpl implements UserEventSubscriptio
     }
 
     @Override
-    @GetMapping(value = "/{eventId}", produces = {
+    @GetMapping(value = "/{itemId}", produces = {
             MediaType.APPLICATION_JSON_VALUE,
             MediaType.APPLICATION_XML_VALUE
     })
     @ResponseStatus(value = HttpStatus.OK)
-    public ResponseEntity<UserEventSubscription> getEventSubscription(
+    public ResponseEntity<UserEventSubscription> getSubscription(
             @PathVariable final Long userId,
-            @PathVariable final Long eventId
+            @PathVariable final Long itemId
     ) {
-        return ResponseEntity.ok(userEventSubscriptionService.get(userId, eventId));
+        return ResponseEntity.ok(userEventSubscriptionService.get(userId, itemId));
     }
 
     @Override
-    @PostMapping(value = "/{eventId}", produces = {
+    @PostMapping(value = "/{itemId}", produces = {
             MediaType.APPLICATION_JSON_VALUE,
             MediaType.APPLICATION_XML_VALUE
     })
     @ResponseStatus(value = HttpStatus.CREATED)
-    public ResponseEntity<UserEventSubscription> subscribeToEvent(
+    public ResponseEntity<UserEventSubscription> subscribe(
             @PathVariable final Long userId,
-            @PathVariable final Long eventId
+            @PathVariable final Long itemId
     ) {
-        return ResponseEntity.ok(userEventSubscriptionService.subscribeUserToEvent(userId, eventId));
+        return ResponseEntity.ok(userEventSubscriptionService.subscribe(userId, itemId));
     }
 
     @Override
-    @DeleteMapping(value = "/{eventId}", produces = {
+    @DeleteMapping(value = "/{itemId}", produces = {
             MediaType.APPLICATION_JSON_VALUE,
             MediaType.APPLICATION_XML_VALUE
     })
     @ResponseStatus(value = HttpStatus.OK)
-    public ResponseEntity<Void> unsubscribeFromEvent(
+    public ResponseEntity<Void> unsubscribe(
             @PathVariable final Long userId,
-            @PathVariable final Long eventId
+            @PathVariable final Long itemId
     ) {
-        userEventSubscriptionService.unsubscribeUserFromEvent(userId, eventId);
+        userEventSubscriptionService.unsubscribe(userId, itemId);
         return ResponseEntity.ok().build();
     }
 }

@@ -46,7 +46,12 @@ public class UserServiceResponseEntityExceptionHandler extends ResponseEntityExc
      * @param request the current request.
      * @return a ResponseEntity containing the error details and status.
      */
-    @ExceptionHandler({UserNotFoundException.class, EventNotFoundException.class, SubscriptionNotFoundException.class})
+    @ExceptionHandler({
+            UserNotFoundException.class,
+            EventNotFoundException.class,
+            CategoryNotFoundException.class,
+            SubscriptionNotFoundException.class
+    })
     public final ResponseEntity<ErrorDetails> handleNotFoundExceptions(Exception ex, WebRequest request) {
         ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(),
                 ex.getMessage(), request.getDescription(false));

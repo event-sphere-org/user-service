@@ -4,7 +4,6 @@ import com.eventsphere.user.controller.UserController;
 import com.eventsphere.user.model.User;
 import com.eventsphere.user.model.dto.ChangePasswordDto;
 import com.eventsphere.user.model.dto.UserDto;
-import com.eventsphere.user.service.RabbitMqSender;
 import com.eventsphere.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +37,6 @@ public class UserControllerImpl implements UserController {
     private static final String SELF_REL = "self";
 
     private final UserService userService;
-    private final RabbitMqSender sender;
 
     @Override
     @GetMapping(produces = {
@@ -154,10 +152,6 @@ public class UserControllerImpl implements UserController {
     @ResponseStatus(value = HttpStatus.OK)
     public ResponseEntity<Void> deleteUser(@PathVariable final Long id) {
         userService.delete(id);
-
-        log.info("Sending id {} message to RabbitMQ to event-service", id);
-        sender.send(id);
-
         return ResponseEntity.ok().build();
     }
 }

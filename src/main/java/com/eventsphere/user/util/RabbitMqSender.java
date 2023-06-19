@@ -1,4 +1,4 @@
-package com.eventsphere.user.service;
+package com.eventsphere.user.util;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
