@@ -44,8 +44,11 @@ public class UserControllerImpl implements UserController {
             MediaType.APPLICATION_XML_VALUE
     })
     @ResponseStatus(value = HttpStatus.OK)
-    public ResponseEntity<CollectionModel<User>> getAllUsers() {
-        List<User> users = userService.getAll();
+    public ResponseEntity<CollectionModel<User>> getAllUsers(
+            @RequestParam(defaultValue = "0") final int page,
+            @RequestParam(defaultValue = "10") final int size
+    ) {
+        List<User> users = userService.getAll(page, size);
 
         for (User user : users) {
             user.add(
@@ -58,7 +61,7 @@ public class UserControllerImpl implements UserController {
 
         CollectionModel<User> userCollectionModel = CollectionModel.of(users);
         userCollectionModel.add(
-                linkTo(methodOn(UserControllerImpl.class).getAllUsers()).withRel(SELF_REL),
+                linkTo(methodOn(UserControllerImpl.class).getAllUsers(0, 10)).withRel(SELF_REL),
                 linkTo(methodOn(UserControllerImpl.class).createUser(new User())).withRel(CREATE_USER_REL)
         );
 
@@ -76,7 +79,7 @@ public class UserControllerImpl implements UserController {
 
         user.add(
                 linkTo(methodOn(UserControllerImpl.class).getUser(id)).withRel(SELF_REL),
-                linkTo(methodOn(UserControllerImpl.class).getAllUsers()).withRel(GET_ALL_USERS_REL),
+                linkTo(methodOn(UserControllerImpl.class).getAllUsers(0, 10)).withRel(GET_ALL_USERS_REL),
                 linkTo(methodOn(UserControllerImpl.class).createUser(user)).withRel(CREATE_USER_REL),
                 linkTo(methodOn(UserControllerImpl.class).changePassword(id, new ChangePasswordDto())).withRel(CHANGE_PASSWORD_REL)
         );
@@ -95,7 +98,7 @@ public class UserControllerImpl implements UserController {
 
         createdUser.add(
                 linkTo(methodOn(UserControllerImpl.class).createUser(user)).withRel(SELF_REL),
-                linkTo(methodOn(UserControllerImpl.class).getAllUsers()).withRel(GET_ALL_USERS_REL),
+                linkTo(methodOn(UserControllerImpl.class).getAllUsers(0, 10)).withRel(GET_ALL_USERS_REL),
                 linkTo(methodOn(UserControllerImpl.class).getUser(createdUser.getId())).withRel(GET_USER_REL),
                 linkTo(methodOn(UserControllerImpl.class).changePassword(createdUser.getId(), new ChangePasswordDto())).withRel(CHANGE_PASSWORD_REL)
         );
@@ -122,7 +125,7 @@ public class UserControllerImpl implements UserController {
 
         updatedUser.add(
                 linkTo(methodOn(UserControllerImpl.class).updateUser(id, userDto)).withRel(SELF_REL),
-                linkTo(methodOn(UserControllerImpl.class).getAllUsers()).withRel(GET_ALL_USERS_REL),
+                linkTo(methodOn(UserControllerImpl.class).getAllUsers(0, 10)).withRel(GET_ALL_USERS_REL),
                 linkTo(methodOn(UserControllerImpl.class).createUser(updatedUser)).withRel(CREATE_USER_REL),
                 linkTo(methodOn(UserControllerImpl.class).changePassword(id, new ChangePasswordDto())).withRel(CHANGE_PASSWORD_REL)
         );

@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 public interface UserService {
-    List<User> getAll();
+    List<User> getAll(final int page, final int size);
 
     User get(Long id) throws UserNotFoundException;
 

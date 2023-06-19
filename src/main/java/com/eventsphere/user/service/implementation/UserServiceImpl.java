@@ -14,6 +14,8 @@ import com.eventsphere.user.service.UserService;
 import com.eventsphere.user.util.RabbitMqSender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -41,8 +43,9 @@ public class UserServiceImpl implements UserService {
      * @return List of {@link User} objects.
      */
     @Override
-    public List<User> getAll() {
-        return userRepository.findAll();
+    public List<User> getAll(final int page, final int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return userRepository.findAll(pageable).getContent();
     }
 
     /**

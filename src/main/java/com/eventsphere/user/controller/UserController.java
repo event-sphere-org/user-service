@@ -26,7 +26,7 @@ public interface UserController {
      * @return ResponseEntity with the list of users and HTTP status OK.
      */
     @Operation(summary = "Retrieves a list of all users", description = "Retrieves a list of all users")
-    ResponseEntity<CollectionModel<User>> getAllUsers();
+    ResponseEntity<CollectionModel<User>> getAllUsers(final int page, final int size);
 
     /**
      * Retrieves a specific user by their ID.
